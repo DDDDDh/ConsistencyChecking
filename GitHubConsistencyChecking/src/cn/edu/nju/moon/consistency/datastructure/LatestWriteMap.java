@@ -1,12 +1,12 @@
-package cn.edu.nju.moon.consistency.datastructure;
+package src.cn.edu.nju.moon.consistency.datastructure;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
 
 /**
  * @description for each {@link ReadIncOperation}, it keeps a record

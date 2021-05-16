@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.schedule;
+package test.cn.edu.nju.moon.consistency.schedule;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -8,8 +8,9 @@ import java.util.List;
 
 import org.junit.Before;
 
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.schedule.constructor.RandomValidViewFactory;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.schedule.constructor.RandomValidViewFactory;
+import src.cn.edu.nju.moon.consistency.schedule.*;
 
 /**
  * @description  test for {@link View}

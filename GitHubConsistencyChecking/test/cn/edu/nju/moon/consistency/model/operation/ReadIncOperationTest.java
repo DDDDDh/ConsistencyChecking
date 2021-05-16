@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.model.operation;
+package test.cn.edu.nju.moon.consistency.model.operation;
 
 /**
  * @description test the behaviour when {@link ReadIncOperation}s are stored in 
@@ -14,7 +14,8 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.operation.*;
 
 public class ReadIncOperationTest
 {

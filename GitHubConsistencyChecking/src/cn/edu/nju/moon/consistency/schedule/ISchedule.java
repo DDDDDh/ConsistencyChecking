@@ -1,7 +1,7 @@
-package cn.edu.nju.moon.consistency.schedule;
+package src.cn.edu.nju.moon.consistency.schedule;
 
-import cn.edu.nju.moon.consistency.checker.Checker;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.checker.Checker;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
 
 /**
  * @description The form of {@link WeakSchedule} depend on the respective consistency model.

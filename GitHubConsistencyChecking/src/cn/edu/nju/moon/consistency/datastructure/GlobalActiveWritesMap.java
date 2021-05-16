@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.datastructure;
+package src.cn.edu.nju.moon.consistency.datastructure;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import cn.edu.nju.moon.consistency.checker.ReadIncChecker;
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.checker.ReadIncChecker;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
 
 /**
  * @description {@link GlobalActiveWritesMap} is a global data structure

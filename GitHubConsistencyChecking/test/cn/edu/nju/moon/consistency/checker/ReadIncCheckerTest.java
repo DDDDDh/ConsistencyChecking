@@ -1,13 +1,14 @@
-package cn.edu.nju.moon.consistency.checker;
+package test.cn.edu.nju.moon.consistency.checker;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.constructor.FileBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.model.observation.constructor.IBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.schedule.constructor.RandomViewFactory;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.FileBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.IBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.schedule.constructor.RandomViewFactory;
+import src.cn.edu.nju.moon.consistency.checker.*;
 
 public class ReadIncCheckerTest
 {

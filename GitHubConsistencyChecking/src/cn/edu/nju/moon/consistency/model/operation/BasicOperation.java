@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.model.operation;
+package src.cn.edu.nju.moon.consistency.model.operation;
 
 import static org.junit.Assert.assertTrue;
 
@@ -7,9 +7,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.schedule.View;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.schedule.View;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @author hengxin

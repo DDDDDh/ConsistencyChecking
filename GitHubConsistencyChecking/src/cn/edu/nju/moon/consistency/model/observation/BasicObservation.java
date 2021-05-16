@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.model.observation;
+package src.cn.edu.nju.moon.consistency.model.observation;
 
 import static org.junit.Assert.assertTrue;
 
@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import cn.edu.nju.moon.consistency.checker.ReadIncChecker;
-import cn.edu.nju.moon.consistency.model.observation.constructor.FileBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
-import cn.edu.nju.moon.consistency.model.process.BasicProcess;
-import cn.edu.nju.moon.consistency.model.process.ReadIncProcess;
+import src.cn.edu.nju.moon.consistency.checker.ReadIncChecker;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.FileBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.model.process.BasicProcess;
+import src.cn.edu.nju.moon.consistency.model.process.ReadIncProcess;
 
 /**
  * @author hengxin
@@ -93,8 +93,10 @@ public class BasicObservation
 	 */
 	public void preprocessing()
 	{
+//		System.out.println("prepocessing");
 		this.establishProgramOrder();
-		this.establishWritetoOrder();
+//		this.establishWritetoOrder();
+        this.establishWritetoOrderCausal();
 	}
 	
 	/**
@@ -153,6 +155,12 @@ public class BasicObservation
 	{
 		// all READ {@link BasicOperation}s are in the {@link BasicProcess} with #masterPid
 		this.procMap.get(this.masterPid).establishWritetoOrder(this);
+	}
+
+	protected void establishWritetoOrderCausal(){ //establish write-to order for checking causal consistency
+		for(int pid: this.procMap.keySet()){
+			this.procMap.get(pid).establishWritetoOrder(this);
+		}
 	}
 	
 	/**
@@ -219,6 +227,7 @@ public class BasicObservation
 	 */
 	protected void storeWrite2Pool()
 	{
+//		System.out.println("Init write pool");
 		for (int pid : this.procMap.keySet())
 			for (BasicOperation bop : this.getProcess(pid).getOpList())
 				if (bop.isWriteOp())
@@ -255,7 +264,7 @@ public class BasicObservation
 	}
 	/** ############### END: {@link #write_pool} related ################ */
 
-	
+
 	/**
 	 * @description record the {@link BasicObservation} generated randomly
 	 * @date 2013-1-7

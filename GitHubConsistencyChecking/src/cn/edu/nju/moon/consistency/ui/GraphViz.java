@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.ui;
+package src.cn.edu.nju.moon.consistency.ui;
 
 // GraphViz.java - a simple API to call dot from Java programs
 

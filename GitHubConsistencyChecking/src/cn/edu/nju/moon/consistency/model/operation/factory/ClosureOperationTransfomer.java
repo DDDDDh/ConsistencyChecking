@@ -1,7 +1,7 @@
-package cn.edu.nju.moon.consistency.model.operation.factory;
+package src.cn.edu.nju.moon.consistency.model.operation.factory;
 
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
 
 /**
  * @description transform {@link BasicOperation} into {@link ClosureOperation} 

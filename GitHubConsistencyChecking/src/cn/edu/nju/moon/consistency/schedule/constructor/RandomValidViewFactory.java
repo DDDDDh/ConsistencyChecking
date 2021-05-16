@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.schedule.constructor;
+package src.cn.edu.nju.moon.consistency.schedule.constructor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.schedule.View;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.schedule.View;
 
 /**
  * @description generate valid {@link View} randomly

@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.checker;
+package src.cn.edu.nju.moon.consistency.checker;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,16 +9,16 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import cn.edu.nju.moon.consistency.datastructure.GlobalActiveWritesMap;
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
-import cn.edu.nju.moon.consistency.model.process.ReadIncProcess;
-import cn.edu.nju.moon.consistency.schedule.ISchedule;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.datastructure.GlobalActiveWritesMap;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.model.process.ReadIncProcess;
+import src.cn.edu.nju.moon.consistency.schedule.ISchedule;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @author hengxin
@@ -335,7 +335,7 @@ public class ReadIncChecker extends Checker
 				{
 					tmp_riop = (ReadIncOperation) bop;
 					tmp_riop.decCount();
-					if (tmp_riop.getCount() == 0 && ! tmp_riop.isDone())	/** TODO£º is it necessary to check riop.isDone() **/
+					if (tmp_riop.getCount() == 0 && ! tmp_riop.isDone())	/** TODO is it necessary to check riop.isDone() **/
 						zeroQueue.offer(tmp_riop);
 				}
 			}

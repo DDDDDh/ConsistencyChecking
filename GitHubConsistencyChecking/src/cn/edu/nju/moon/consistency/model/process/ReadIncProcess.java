@@ -1,16 +1,16 @@
-package cn.edu.nju.moon.consistency.model.process;
+package src.cn.edu.nju.moon.consistency.model.process;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
-import cn.edu.nju.moon.consistency.model.operation.factory.ReadIncOperationTransformer;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.factory.ReadIncOperationTransformer;
 
 /**
  * @description {@link ReadIncProcess} filter READ BasicOperation
@@ -42,6 +42,8 @@ public class ReadIncProcess extends BasicProcess
 		super(proc.getPid());
 
 		proc.filter_fill(masterPid, this, new ReadIncOperationTransformer());
+
+//		proc.filter_fill_causal(masterPid, this, new ReadIncOperationTransformer());
 		
 //		for (BasicOperation bop : proc.getOpListCopy())
 //		{	

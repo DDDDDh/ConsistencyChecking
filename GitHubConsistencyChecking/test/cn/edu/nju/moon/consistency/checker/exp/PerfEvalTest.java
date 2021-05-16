@@ -1,19 +1,19 @@
-package cn.edu.nju.moon.consistency.checker.exp;
+package test.cn.edu.nju.moon.consistency.checker.exp;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import cn.edu.nju.moon.consistency.checker.Checker;
-import cn.edu.nju.moon.consistency.checker.ClosureGraphChecker;
-import cn.edu.nju.moon.consistency.checker.ReadIncChecker;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.observation.constructor.IBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
-import cn.edu.nju.moon.consistency.schedule.WeakSchedule;
-import cn.edu.nju.moon.consistency.schedule.constructor.RandomValidViewFactory;
-import cn.edu.nju.moon.consistency.schedule.constructor.RandomViewFactory;
+import src.cn.edu.nju.moon.consistency.checker.Checker;
+import src.cn.edu.nju.moon.consistency.checker.ClosureGraphChecker;
+import src.cn.edu.nju.moon.consistency.checker.ReadIncChecker;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.IBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.schedule.WeakSchedule;
+import src.cn.edu.nju.moon.consistency.schedule.constructor.RandomValidViewFactory;
+import src.cn.edu.nju.moon.consistency.schedule.constructor.RandomViewFactory;
 
 public class PerfEvalTest
 {

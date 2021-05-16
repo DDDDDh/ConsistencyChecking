@@ -1,10 +1,10 @@
-package cn.edu.nju.moon.consistency.model.observation;
+package test.cn.edu.nju.moon.consistency.model.observation;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.constructor.RandomBasicObservationConstructor;
 
 public class RandomRawObservationConstructorTest
 {

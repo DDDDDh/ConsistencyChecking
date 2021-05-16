@@ -1,7 +1,7 @@
-package cn.edu.nju.moon.consistency.model.operation.factory;
+package src.cn.edu.nju.moon.consistency.model.operation.factory;
 
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
 
 /**
  * transform one kind of operation (mainly {@link BasicOperation}) into another

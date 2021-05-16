@@ -1,8 +1,8 @@
-package cn.edu.nju.moon.consistency.schedule;
+package src.cn.edu.nju.moon.consistency.schedule;
 
 import java.util.Arrays;
 
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
 
 /**
  * @description 

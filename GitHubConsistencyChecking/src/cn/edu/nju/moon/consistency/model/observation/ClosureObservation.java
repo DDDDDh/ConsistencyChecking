@@ -1,14 +1,14 @@
-package cn.edu.nju.moon.consistency.model.observation;
+package src.cn.edu.nju.moon.consistency.model.observation;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.edu.nju.moon.consistency.checker.ClosureGraphChecker;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
-import cn.edu.nju.moon.consistency.model.process.ClosureProcess;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.checker.ClosureGraphChecker;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
+import src.cn.edu.nju.moon.consistency.model.process.ClosureProcess;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @description {@link ClosureObservation} is used in {@link ClosureGraphChecker}
@@ -48,6 +48,7 @@ public class ClosureObservation extends BasicObservation
 		super(rob.getProcNum());
 		
 		this.masterPid = masterPid;
+//		System.out.println("initial closure ob for process:" + masterPid);
 		
 		for (int pid : rob.getProcMap().keySet())
 			this.procMap.put(pid, new ClosureProcess(masterPid, rob.getProcess(pid)));
@@ -148,15 +149,15 @@ public class ClosureObservation extends BasicObservation
 	{
 		boolean changed = false;
 
-		for(int mid = 0; mid < this.totalOpNum; mid++)
-			for(int src = 0; src < this.totalOpNum; src++)
-				for(int dest = 0; dest < this.totalOpNum; dest++)
-					if(! this.opMatrix[src][dest])
-					{
+		for(int mid = 0; mid < this.totalOpNum; mid++) {
+			for (int src = 0; src < this.totalOpNum; src++)
+				for (int dest = 0; dest < this.totalOpNum; dest++)
+					if (!this.opMatrix[src][dest]) {
 						this.opMatrix[src][dest] = this.opMatrix[src][mid] && this.opMatrix[mid][dest];
-						changed = changed || this.opMatrix[src][dest];	// is it changed? 
+						changed = changed || this.opMatrix[src][dest];    // is it changed?
 					}
-
+		}
+//		this.printMatrix();
 		return changed;
 	}
 	
@@ -233,5 +234,20 @@ public class ClosureObservation extends BasicObservation
 	{
 		return this.opMatrix[from_op.getGlobalIndex()][to_op.getGlobalIndex()];
 	}
-	
+
+	public void printMatrix(){
+		System.out.println("The adj matrix for process:" + this.getMasterPid());
+		for(int i = 0; i < this.totalOpNum; i++){
+			for(int j = 0; j < this.totalOpNum; j++){
+				if(this.opMatrix[i][j]){
+					System.out.print("1 ");
+				}
+				else{
+					System.out.print("0 ");
+				}
+			}
+			System.out.println();
+		}
+
+	}
 }

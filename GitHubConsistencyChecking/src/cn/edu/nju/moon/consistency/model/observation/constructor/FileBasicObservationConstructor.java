@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.model.observation.constructor;
+package src.cn.edu.nju.moon.consistency.model.observation.constructor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.process.BasicProcess;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.process.BasicProcess;
 
 /**
  * construct {@link BasicObservation} from file

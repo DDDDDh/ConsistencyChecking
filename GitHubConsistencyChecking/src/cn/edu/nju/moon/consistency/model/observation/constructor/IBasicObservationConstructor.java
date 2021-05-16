@@ -1,6 +1,6 @@
-package cn.edu.nju.moon.consistency.model.observation.constructor;
+package src.cn.edu.nju.moon.consistency.model.observation.constructor;
 
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
 
 /**
  * @description constructor for {@link BasicObservation}

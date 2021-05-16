@@ -1,12 +1,12 @@
-package cn.edu.nju.moon.consistency.checker;
+package src.cn.edu.nju.moon.consistency.checker;
 
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.process.BasicProcess;
-import cn.edu.nju.moon.consistency.schedule.ISchedule;
-import cn.edu.nju.moon.consistency.schedule.WeakSchedule;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.process.BasicProcess;
+import src.cn.edu.nju.moon.consistency.schedule.ISchedule;
+import src.cn.edu.nju.moon.consistency.schedule.WeakSchedule;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @description Consistency checking algorithm is responsible for implementing
@@ -85,6 +85,7 @@ public abstract class Checker
 		{
 			boolean partial_consistent = true;
 			mob = this.getMasterObservation(pid);
+//			System.out.println("finish init mob for process" + pid);
 			
 			if (this.trivial_check(mob))	/** pass the simple check */
 			{	

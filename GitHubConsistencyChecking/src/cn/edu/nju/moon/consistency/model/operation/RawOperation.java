@@ -1,10 +1,10 @@
-package cn.edu.nju.moon.consistency.model.operation;
+package src.cn.edu.nju.moon.consistency.model.operation;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
 
 
 /** 

@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.model.operation;
+package src.cn.edu.nju.moon.consistency.model.operation;
 
 import static org.junit.Assert.assertTrue;
 
@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import cn.edu.nju.moon.consistency.checker.ReadIncChecker;
-import cn.edu.nju.moon.consistency.datastructure.EarliestRead;
-import cn.edu.nju.moon.consistency.datastructure.LatestWriteMap;
-import cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.checker.ReadIncChecker;
+import src.cn.edu.nju.moon.consistency.datastructure.EarliestRead;
+import src.cn.edu.nju.moon.consistency.datastructure.LatestWriteMap;
+import src.cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @description {@link ReadIncOperation} is specifically designed for {@link ReadIncChecker} algorithm.

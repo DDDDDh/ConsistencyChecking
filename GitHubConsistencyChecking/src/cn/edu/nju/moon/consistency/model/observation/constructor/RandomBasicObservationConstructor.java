@@ -1,14 +1,14 @@
-package cn.edu.nju.moon.consistency.model.observation.constructor;
+package src.cn.edu.nju.moon.consistency.model.observation.constructor;
 
 import java.util.HashSet;
 import java.util.Random;
 
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.schedule.View;
-import cn.edu.nju.moon.consistency.schedule.constructor.IViewFactory;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.schedule.View;
+import src.cn.edu.nju.moon.consistency.schedule.constructor.IViewFactory;
 
 /**
  * @description construct a basic observation {@link BasicObservation} randomly

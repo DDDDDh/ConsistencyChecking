@@ -1,13 +1,13 @@
-package cn.edu.nju.moon.consistency.model.operation;
+package src.cn.edu.nju.moon.consistency.model.operation;
 
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.edu.nju.moon.consistency.checker.ClosureGraphChecker;
-import cn.edu.nju.moon.consistency.model.observation.ClosureObservation;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.checker.ClosureGraphChecker;
+import src.cn.edu.nju.moon.consistency.model.observation.ClosureObservation;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @description ClosureOperation is the main data structure used in

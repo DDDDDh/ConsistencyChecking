@@ -1,4 +1,4 @@
-package cn.edu.nju.moon.consistency.model;
+package src.cn.edu.nju.moon.consistency.model;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -1,13 +1,13 @@
-package cn.edu.nju.moon.consistency.model.process;
+package src.cn.edu.nju.moon.consistency.model.process;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
-import cn.edu.nju.moon.consistency.model.operation.RawOperation;
-import cn.edu.nju.moon.consistency.model.operation.factory.IOperationTransformer;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.factory.IOperationTransformer;
 
 /**
  * @author hengxin
@@ -168,6 +168,15 @@ public class BasicProcess
 				op.setIndex(proc.getOpNum());
 				proc.addOperation(op);
 			}
+		}
+	}
+
+	public void filter_fill_causal(int masterPid, BasicProcess proc, IOperationTransformer op_trans){ //与上面函数的区别在于保留了非主线程上的读操作
+		for(BasicOperation bop: this.getOpListCopy()){
+			BasicOperation op = null;
+			op = op_trans.transform(bop);
+			op.setIndex(proc.getOpNum());
+			proc.addOperation(op);
 		}
 	}
 	

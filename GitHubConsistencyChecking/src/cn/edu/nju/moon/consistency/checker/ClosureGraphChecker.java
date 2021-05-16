@@ -1,9 +1,9 @@
-package cn.edu.nju.moon.consistency.checker;
+package src.cn.edu.nju.moon.consistency.checker;
 
-import cn.edu.nju.moon.consistency.model.observation.ClosureObservation;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.schedule.ISchedule;
-import cn.edu.nju.moon.consistency.ui.DotUI;
+import src.cn.edu.nju.moon.consistency.model.observation.ClosureObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.schedule.ISchedule;
+import src.cn.edu.nju.moon.consistency.ui.DotUI;
 
 /**
  * @description OperationGraphChecker is a PRAM Consistency checking algorithm
@@ -47,6 +47,7 @@ public class ClosureGraphChecker extends Checker
 	@Override
 	protected BasicObservation getMasterObservation(int masterPid)
 	{
+//		System.out.println("oh?");
 		return new ClosureObservation(masterPid, super.rob);
 	}
 

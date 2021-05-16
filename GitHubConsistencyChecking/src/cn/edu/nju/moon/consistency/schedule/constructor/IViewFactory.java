@@ -1,6 +1,6 @@
-package cn.edu.nju.moon.consistency.schedule.constructor;
+package src.cn.edu.nju.moon.consistency.schedule.constructor;
 
-import cn.edu.nju.moon.consistency.schedule.View;
+import src.cn.edu.nju.moon.consistency.schedule.View;
 
 /**
  * @description factory for different kinds of {@link View}s

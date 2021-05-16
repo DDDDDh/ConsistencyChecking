@@ -1,14 +1,14 @@
-package cn.edu.nju.moon.consistency.ui;
+package src.cn.edu.nju.moon.consistency.ui;
 
 import java.io.File;
 
-import cn.edu.nju.moon.consistency.checker.ReadIncChecker;
-import cn.edu.nju.moon.consistency.datastructure.GlobalActiveWritesMap;
-import cn.edu.nju.moon.consistency.model.GlobalData;
-import cn.edu.nju.moon.consistency.model.observation.BasicObservation;
-import cn.edu.nju.moon.consistency.model.operation.BasicOperation;
-import cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
-import cn.edu.nju.moon.consistency.model.process.BasicProcess;
+import src.cn.edu.nju.moon.consistency.checker.ReadIncChecker;
+import src.cn.edu.nju.moon.consistency.datastructure.GlobalActiveWritesMap;
+import src.cn.edu.nju.moon.consistency.model.GlobalData;
+import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
+import src.cn.edu.nju.moon.consistency.model.process.BasicProcess;
 
 /**
  * @description UI for {@link ReadIncChecker}; visualization of the data structures 

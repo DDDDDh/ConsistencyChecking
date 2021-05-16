@@ -1,7 +1,9 @@
-package cn.edu.nju.moon.consistency.model.observation;
+package test.cn.edu.nju.moon.consistency.model.observation;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import src.cn.edu.nju.moon.consistency.model.observation.*;
 
 /**
  * test {@link ReadIncObservation}
