@@ -123,6 +123,10 @@ public class BasicOperation extends RawOperation
 		return this.programOrder;
 	}
 
+	public BasicOperation getReProgramOrder() {
+		return reProgramOrder;
+	}
+
 	/**
 	 * set Writeto Order: this => @param rop
 	 * @param rop READ operation in some Writeto Order 

@@ -17,12 +17,12 @@ public class testRun {
 
     public static void main (String args[]){
 
-        System.out.println("Hello?");
+        System.out.println("Begin");
 
         GlobalData.VISUALIZATION = false;
 
-        IBasicObservationConstructor randcons = new FileBasicObservationConstructor("/Users/yi-huang/Project/IncrementalCCC/target/ParameterChoosing/Running_202151410_opNum1000_processNum10_varRange20_valRange100_rRate3_wRate1_debug.edn");
-//        IBasicObservationConstructor randcons = new FileBasicObservationConstructor("/Users/yi-huang/Project/IncrementalCCC/target/ParameterChoosing/debug/special01_debug.edn");
+//        IBasicObservationConstructor randcons = new FileBasicObservationConstructor("/Users/yi-huang/Project/IncrementalCCC/target/ParameterChoosing/Running_202151410_opNum1000_processNum10_varRange20_valRange100_rRate3_wRate1_debug.edn");
+        IBasicObservationConstructor randcons = new FileBasicObservationConstructor("/Users/yi-huang/Project/IncrementalCCC/target/ParameterChoosing/debug/special01_debug.edn");
         BasicObservation bob = randcons.construct();
 
 

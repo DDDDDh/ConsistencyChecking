@@ -3,10 +3,13 @@ package src.cn.edu.nju.moon.consistency.checker;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
+import src.cn.edu.nju.moon.consistency.model.observation.ReadIncObservation;
 import src.cn.edu.nju.moon.consistency.model.process.BasicProcess;
 import src.cn.edu.nju.moon.consistency.schedule.ISchedule;
 import src.cn.edu.nju.moon.consistency.schedule.WeakSchedule;
 import src.cn.edu.nju.moon.consistency.ui.DotUI;
+
+import src.cn.edu.nju.moon.consistency.model.operation.*;
 
 /**
  * @description Consistency checking algorithm is responsible for implementing
@@ -85,10 +88,10 @@ public abstract class Checker
 		{
 			boolean partial_consistent = true;
 			mob = this.getMasterObservation(pid);
-//			System.out.println("finish init mob for process" + pid);
-			
 			if (this.trivial_check(mob))	/** pass the simple check */
-			{	
+			{
+//				System.out.println("Pass trivial check!");
+
 				if (! this.check_part(mob))	/** process with pid does not satisfy consistency condition **/
 				{
 					consistent = false;
@@ -133,8 +136,10 @@ public abstract class Checker
 //			System.out.println("Null Check: true");
 			return true;
 		}
+
 		
 		ob.preprocessing();	// preprocessing: program order and write to order
+
 		if (ob.readLaterWrite())	/** some READ reads later WRITE in the same process; it does not satisfy PRAM Consistency **/
 		{
 //			System.err.println("Read late write: false");

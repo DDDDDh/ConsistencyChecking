@@ -41,9 +41,9 @@ public class ReadIncProcess extends BasicProcess
 	{
 		super(proc.getPid());
 
-		proc.filter_fill(masterPid, this, new ReadIncOperationTransformer());
+//		proc.filter_fill(masterPid, this, new ReadIncOperationTransformer());
 
-//		proc.filter_fill_causal(masterPid, this, new ReadIncOperationTransformer());
+		proc.filter_fill_causal(masterPid, this, new ReadIncOperationTransformer());
 		
 //		for (BasicOperation bop : proc.getOpListCopy())
 //		{	
@@ -69,7 +69,7 @@ public class ReadIncProcess extends BasicProcess
 	 * @see ReadIncObservation private method #establishWritetoOrder()
 	 */
 	@Override
-	public void establishWritetoOrder(BasicObservation bob)
+	public void establishWritetoOrder(BasicObservation bob) //建立write to 关系同时初始化earliest read信息
 	{
 		List<BasicOperation> opList = this.opList;
 		ReadIncOperation rriop = null;

@@ -55,9 +55,12 @@ public class ReadIncOperation extends BasicOperation
 	
 	private int count = 0;		/** related to and manipulated together with {@link #isCandidate} and {@link #isDone}**/
 
+	private boolean inCausalSet = false; /**Used in causal set choosing**/
+	private int inDegree = 0; /**Used in causal set choosing, the indegree of each node**/
+
 //	private List<ReadIncOperation> predecessors = null;
 //	private List<ReadIncOperation> successors = null;
-	
+
 	public ReadIncOperation(RawOperation otherOp)
 	{
 		super(otherOp);
@@ -173,6 +176,8 @@ public class ReadIncOperation extends BasicOperation
 		ReadIncOperation latest_wriop = this.getLatestWriteMap().getLatestWrite(var);
 		if (latest_wriop != null && latest_wriop.getWid() >= wriop.getWid())
 			return true;
+
+		//dh:下面做的事情：根据w'->w的添加，更新earlistRead和lastWrite
 		
 		this.earliestRead.updateEarliestRead(wriop);	// update earliest read
 		
@@ -328,6 +333,47 @@ public class ReadIncOperation extends BasicOperation
 	public void initCount(int val)
 	{
 		this.count = val;
+	}
+
+	/**
+	 * @return {@link #inCausalSet}
+	 */
+	public boolean isInCausalSet(){
+		return this.inCausalSet;
+	}
+
+	/**
+	 * set {@link #inCausalSet} true
+	 */
+	public void setInCausalSet(){
+		this.inCausalSet = true;
+	}
+
+	/**
+	 * set {@link #inCausalSet} false
+	 */
+	public void resetInCausalSet(){
+		this.inCausalSet = false;
+	}
+
+	public void setInDegree(int n){
+		this.inDegree = n;
+	}
+
+	public int getInDegree(){
+		return this.inDegree;
+	}
+
+	public void incIndegree(){
+		this.inDegree++;
+	}
+
+	public void decIndegree(){
+		this.inDegree--;
+	}
+
+	public void resetIndegree(){
+		this.inDegree = 0;
 	}
 	
 //	/**

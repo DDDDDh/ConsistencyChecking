@@ -95,6 +95,7 @@ public class BasicObservation
 	{
 //		System.out.println("prepocessing");
 		this.establishProgramOrder();
+
 //		this.establishWritetoOrder();
         this.establishWritetoOrderCausal();
 	}
@@ -118,7 +119,7 @@ public class BasicObservation
 	/**
 	 * is there no {@link ReadIncOperation} at all in the {@link ReadIncProcess}
 	 * with masterPid. if it is the case, PRAM consistency is satisfied trivially.
-	 * 
+	 *
 	 * @return true, if no {@link ReadIncOperation} 
 	 * 	in {@link ReadIncProcess} with masterPid;	false, o.w..
 	 */

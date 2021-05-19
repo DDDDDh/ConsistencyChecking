@@ -75,9 +75,12 @@ public class ClosureGraphChecker extends Checker
 		 *  2) iteration of applying two rules until no new edges are added,
 		 *  in other words, a fixed point is reached
 		 */
+//		int loopTime = 0;
+
 		boolean changed_wprime2w = false;
 		do
 		{
+//			loopTime++;
 			clob.closure();
 			changed_wprime2w = clob.apply_wprime2w_edge_rule();
 			if (clob.cycle_check())	// cycle detection
@@ -86,6 +89,7 @@ public class ClosureGraphChecker extends Checker
 				break;
 			}
 		}while(changed_wprime2w);
+//		System.out.println("Loop time for process" + clob.getMasterPid() + ": " + loopTime);
 
 //		if (consistent)	// satisfying PRAM Consistency; construct a witness
 //			schedule.constructExecution(master_cls_ob);

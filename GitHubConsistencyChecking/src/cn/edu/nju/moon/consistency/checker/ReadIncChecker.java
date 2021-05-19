@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+//import com.sun.tools.javac.code.Lint;
 import src.cn.edu.nju.moon.consistency.datastructure.GlobalActiveWritesMap;
 import src.cn.edu.nju.moon.consistency.model.GlobalData;
 import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
@@ -19,6 +20,7 @@ import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
 import src.cn.edu.nju.moon.consistency.model.process.ReadIncProcess;
 import src.cn.edu.nju.moon.consistency.schedule.ISchedule;
 import src.cn.edu.nju.moon.consistency.ui.DotUI;
+//import sun.awt.image.ImageWatched;
 
 /**
  * @author hengxin
@@ -90,9 +92,11 @@ public class ReadIncChecker extends Checker
 		for (int index = 0; index < master_size; index++)
 		{
 			bop = master_proc.getOperation(index);
+//			System.out.println("bop:" + bop.toString());
 			if (bop.isReadOp())	// "ReadIncremental" checking algorithm is READ centric.
 			{
 				master_cur_rriop = (ReadIncOperation) bop;
+//				System.out.println("bop earlist read:" + ((ReadIncOperation) bop).getEarliestRead().getEarlistReadInt());
 				master_proc.set_cur_rriop(master_cur_rriop);	// set the current {@link ReadIncOperation} to check
 				
 				// (1) compute global active WRITEs
@@ -152,6 +156,8 @@ public class ReadIncChecker extends Checker
 	private boolean compute_globalActiveWritesMap(ReadIncProcess master_proc, ReadIncOperation master_pre_rriop, ReadIncOperation master_cur_rriop)
 	{
 		assertTrue("READ incremental: two arguments should be READ", master_pre_rriop.isReadOp() && master_cur_rriop.isReadOp());
+
+//		System.out.println("Dealing with master_proc:" + master_proc.getPid() + " pre r:" + master_pre_rriop.toString() + " cur r:"  + master_cur_rriop.toString());
 		
 		boolean dominated = false;
 		
@@ -171,10 +177,12 @@ public class ReadIncChecker extends Checker
 			rr_wriop.getEarliestRead().initEarlistRead(master_cur_rriop);	// initialize earliest READ
 			rr_wriop.getLatestWriteMap().updateLatestWrite(pre_riop);	// update latest WRITE map depending on previous operation
 			this.riob.getGlobalActiveWritesMap().replace(rr_wriop);	// deactivate some WRITEs
-			
+//			System.out.println("Done " + rr_wriop.toString());
 			pre_riop = rr_wriop;	// iterate over the next WRITE  
 		}
+//		System.out.println("ok...");
 		master_cur_rriop.getLatestWriteMap().updateLatestWrite(pre_riop);	// update latest WRITE map for @param master_cur_rriop individually
+//		System.out.println("ok1....");
 		
 		// (2) dealing with ww_interval
 		ReadIncOperation dw = (ReadIncOperation) master_cur_rriop.getReadfromWrite();	// dictating WRITE for @param master_cur_rriop
@@ -182,50 +190,115 @@ public class ReadIncChecker extends Checker
 		int pid_dw = dw.getPid();	// pid of dictating WRITE
 		if (pid_dw == pid_master)	// r and D(r) are in the same process and thus ww_interval is empty
 		{
+		    //如果dw与r在同一线程上，那么相关信息已经更新过了
 			if (dw.getIndex() < master_pre_rriop.getIndex())	// D(r) is in r'-downset
 				dominated = true;
 		}
 		else	// r and D(r) are in different processes
 		{
-			ReadIncProcess dw_proc = (ReadIncProcess) this.riob.getProcess(pid_dw);	// ReadIncProcess in which dictating WRITE resides
-			ReadIncOperation dw_pre_wriop = dw_proc.get_pre_wriop();	// previous WRITE {@link ReadIncOperation}; changing in iteration
-			assertTrue("Previous ReadIncOperation in ReadIncProcess not with masterPid is WRITE", dw_pre_wriop.isWriteOp());
-			
-			ReadIncOperation ww_wriop = null;	// WRITE {@link ReadIncOperation} in ww_interval
-			int dw_index = dw.getIndex();
-			int dw_pre_wriop_index = dw_pre_wriop.getIndex();
-			
-			/** dealing with ww_interval: (dw_pre_wriop_index, dw_index] **/
-			Map<String, ReadIncOperation> last_wriop_map = new HashMap<String, ReadIncOperation>();	/** record the last {@link ReadIncOperation} for each variable **/
-			for (int ww_index = dw_pre_wriop_index + 1; ww_index <= dw_index; ww_index++)
-			{
-				ww_wriop = (ReadIncOperation) dw_proc.getOperation(ww_index);
-				assertTrue("WRITE ReadIncOperation in ww_interval", ww_wriop.isWriteOp());
-				
-				ww_wriop.getEarliestRead().initEarlistRead(master_cur_rriop);	/** initialize earliest READ **/
-				ww_wriop.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);	/** update LatestWriteMap depending on previous operation **/
-				
-				/** 
-				 * @description deactivate some WRITEs 
-				 * @modified 	hengxin on 2013-1-6
-				 * @reason   	there are two reasons to deactivate WRITEs:
-				 * 			(1) due to dw_pre_wriop (with corresponding READs)
-				 * 			(2) due to ww_interval itself (mainly focus on ones without corresponding READs)
-				 */
-				this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop, ww_wriop.getVariable());	// deactivate some WRITE due to dw_pre_wriop
-//				this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop_constant);  /** deactivate some WRITE due to dw_pre_wriop **/
-//				this.riob.getGlobalActiveWritesMap().addActiveWrite(ww_wriop);	/** add this new active WRITE **/
-				last_wriop_map.put(ww_wriop.getVariable(), ww_wriop);	/** record the last {@link ReadIncOperation} for this variable **/
-				
-				dw_pre_wriop = ww_wriop;	// iterate over the next WRITE
-			}
-			this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);	/** add active WRITE for each variable **/
-			master_cur_rriop.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
-			
-			if (dw_index <= dw_pre_wriop_index)	// r and D(r) are in different processes and D(r) is in r'-downset
+
+		    //dh:把ww interval的概念由po位于D(r)中的操作扩展到D(r)的CausalPast中
+            LinkedList<ReadIncOperation> causalPast = causal_set(dw);
+            ReadIncOperation causal_w = dw; //防止空值
+
+            Map<String, ReadIncOperation> last_wriop_map = new HashMap<String, ReadIncOperation>();
+//            System.out.println("Causal past of " + dw.toString() +":" + causalPast);
+
+            for(int i = 0; i < causalPast.size(); i++){ //按照拓扑序从causalPast中更新
+                causal_w = causalPast.get(i);
+                update_ww_operation(causal_w, master_cur_rriop, last_wriop_map);
+            }
+            this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);
+            master_cur_rriop.getLatestWriteMap().updateLatestWrite(causal_w);
+
+            this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);
+            master_cur_rriop.getLatestWriteMap().updateLatestWrite(causal_w);
+
+            for(ReadIncOperation riop: causalPast){
+                riop.resetInCausalSet();
+            }
+
+//            if (dw.getIndex() <= dw_pre_wriop.getIndex())	// r and D(r) are in different processes and D(r) is in r'-downset
+            if(master_pre_rriop.getPredecessors().contains(dw))
 				dominated = true;
-			else
-				dw_proc.advance_pre_wriop(dw_pre_wriop);	// advance the previous WRITE forward to the new one
+//
+//        LinkedList<ReadIncOperation> causalPast = causal_set(dw);
+//        Map<String, ReadIncOperation> last_wriop_map = new HashMap<String, ReadIncOperation>();
+//        System.out.println("Causal past of " + dw.toString() +":" + causalPast);
+//        ReadIncOperation causal_w = causalPast.get(0);
+//        ReadIncProcess dw_proc = (ReadIncProcess) this.riob.getProcess(causal_w.getPid());// ReadIncProcess in which the first op of dictating WRITE's causal past resides
+//        ReadIncOperation dw_pre_wriop = dw_proc.get_pre_wriop();
+//        causal_w.getEarliestRead().initEarlistRead(master_cur_rriop);
+//        causal_w.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//        if(causal_w.isWriteOp() && dw_pre_wriop.isWriteOp()) {
+//            this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop, causal_w.getVariable());
+//            last_wriop_map.put(causal_w.getVariable(), causal_w);
+//        }
+//        dw_pre_wriop = causal_w;
+//        for(int i = 1; i < causalPast.size(); i++){
+//            causal_w = causalPast.get(i);
+//            causal_w.getEarliestRead().initEarlistRead(master_cur_rriop);
+//            causal_w.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//            if(causal_w.isWriteOp()&& dw_pre_wriop.isWriteOp()) {
+//                this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop, causal_w.getVariable());
+//                last_wriop_map.put(causal_w.getVariable(), causal_w);
+//            }
+//            dw_pre_wriop = causal_w;
+//        }
+//        this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);
+//        master_cur_rriop.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//
+//        if (dw.getIndex() <= dw_pre_wriop.getIndex())	// r and D(r) are in different processes and D(r) is in r'-downset
+//            dominated = true;
+//        else
+//            dw_proc.advance_pre_wriop(dw_pre_wriop);
+//
+
+
+//
+//			ReadIncProcess dw_proc = (ReadIncProcess) this.riob.getProcess(pid_dw);	// ReadIncProcess in which dictating WRITE resides
+//			ReadIncOperation dw_pre_wriop = dw_proc.get_pre_wriop();	// previous WRITE {@link ReadIncOperation}; changing in iteration
+//			assertTrue("Previous ReadIncOperation in ReadIncProcess not with masterPid is WRITE", dw_pre_wriop.isWriteOp());
+//
+//			ReadIncOperation ww_wriop = null;	// WRITE {@link ReadIncOperation} in ww_interval
+//			int dw_index = dw.getIndex();
+//			int dw_pre_wriop_index = dw_pre_wriop.getIndex();
+//
+//			/** dealing with ww_interval: (dw_pre_wriop_index, dw_index] **/
+//			Map<String, ReadIncOperation> last_wriop_map = new HashMap<String, ReadIncOperation>();	/** record the last {@link ReadIncOperation} for each variable **/
+//			for (int ww_index = dw_pre_wriop_index + 1; ww_index <= dw_index; ww_index++)
+//			{
+//				ww_wriop = (ReadIncOperation) dw_proc.getOperation(ww_index);
+//				System.out.println("ww_wriop:" + ww_wriop.toString());
+////				assertTrue("WRITE ReadIncOperation in ww_interval", ww_wriop.isWriteOp()); //dh:因为ww集合现改为w的causalpast，所以也可能出现read操作，故此assert失效
+//
+//				ww_wriop.getEarliestRead().initEarlistRead(master_cur_rriop);	/** initialize earliest READ **/
+//				ww_wriop.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);	/** update LatestWriteMap depending on previous operation **/
+//
+//				/**
+//				 * @description deactivate some WRITEs
+//				 * @modified 	hengxin on 2013-1-6
+//				 * @reason   	there are two reasons to deactivate WRITEs:
+//				 * 			(1) due to dw_pre_wriop (with corresponding READs)
+//				 * 			(2) due to ww_interval itself (mainly focus on ones without corresponding READs)
+//				 */
+//				this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop, ww_wriop.getVariable());	// deactivate some WRITE due to dw_pre_wriop
+////                    因为ww_wriop是写操作，所以dw_pre_wriop中对应ww_wriop变量的其他写操作被覆写
+////				this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop_constant);  /** deactivate some WRITE due to dw_pre_wriop **/
+////				this.riob.getGlobalActiveWritesMap().addActiveWrite(ww_wriop);	/** add this new active WRITE **/
+//				last_wriop_map.put(ww_wriop.getVariable(), ww_wriop);	/** record the last {@link ReadIncOperation} for this variable **/
+//
+//				dw_pre_wriop = ww_wriop;	// iterate over the next WRITE
+//			}
+//			this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);	/** add active WRITE for each variable **/
+//			master_cur_rriop.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//
+//			if (dw_index <= dw_pre_wriop_index)	// r and D(r) are in different processes and D(r) is in r'-downset
+//				dominated = true;
+//			else
+//				dw_proc.advance_pre_wriop(dw_pre_wriop);	// advance the previous WRITE forward to the new one
+
+
 		}
 //		/**
 //		 *  (3) dealing with @param master_cur_rriop and "dw" separately and specially:
@@ -236,7 +309,7 @@ public class ReadIncChecker extends Checker
 //		ReadIncOperation temp_riop = new ReadIncOperation(new RawOperation(GlobalData.WRITE, GlobalData.DUMMYVAR, -1));	// temp 
 //		for (ReadIncOperation active_wriop : this.riob.getGlobalActiveWritesMap().getActiveWrites(master_cur_rriop.getVariable()))
 //			temp_riop.getLatestWriteMap().updateLatestWrite(active_wriop);
-		
+//        System.out.println("Finish ww part");
 		return dominated;
 	}
 	
@@ -423,5 +496,127 @@ public class ReadIncChecker extends Checker
 		
 		return candidateSet;
 	}
+
+    /**
+     *
+     * @param wriop
+     * @return list of {@link ReadIncOperation}s sorted by their topo order involved in the causalpast of wriop
+     */
+
+	private LinkedList<ReadIncOperation> causal_set(ReadIncOperation wriop){
+	    Set<ReadIncOperation> causalSet = new HashSet<>();
+        Queue<ReadIncOperation> pending = new LinkedList<ReadIncOperation>();
+        LinkedList<ReadIncOperation> tempStack = new LinkedList<ReadIncOperation>();
+        LinkedList<ReadIncOperation> opStack = new LinkedList<ReadIncOperation>(); //以逆拓扑序存储的操作集合
+
+        pending.offer(wriop);
+        while(!pending.isEmpty()){
+            ReadIncOperation curOp = pending.poll();
+//            opStack.addFirst(curOp);
+            tempStack.addFirst(curOp); //入栈
+            if(!curOp.isInCausalSet()){ //第一次加入causal set, 初始化入度
+                curOp.setInDegree(curOp.getPredecessors().size());
+                curOp.setInCausalSet();
+                causalSet.add(curOp);
+            }
+            ReadIncOperation tempOp = null;
+            for(BasicOperation bop: curOp.getPredecessors()){ //BFS skeleton
+                tempOp = (ReadIncOperation) bop;
+                tempStack.addFirst(tempOp);
+                if(! tempOp.isInCausalSet()){
+                    pending.offer(tempOp);
+                }
+            }
+        }
+
+        while(!tempStack.isEmpty()){
+            ReadIncOperation curOp = tempStack.removeFirst();
+            if(curOp.getInDegree() == 0 && curOp.isInCausalSet()){ //找到入度为0且仍在causalset中的点
+                opStack.add(curOp);
+                curOp.resetInCausalSet();
+                ReadIncOperation tempOp = null;
+                for(BasicOperation bop: curOp.getSuccessors()){
+                    tempOp = (ReadIncOperation) bop;
+                    if(tempOp.isInCausalSet()){
+                        tempOp.decIndegree();
+                    }
+                }
+            }
+        }
+
+        for(ReadIncOperation op: opStack){ //还原相关信息
+//            op.resetInCausalSet();
+            op.resetIndegree();
+        }
+
+        assertTrue("Are they equal?", opStack.size() == causalSet.size());
+
+	    return opStack;
+    }
+
+    public void update_ww_operation(ReadIncOperation curOp, ReadIncOperation master_cur_rriop, Map<String, ReadIncOperation> last_wriop_map){
+
+//        LinkedList<ReadIncOperation> causalPast = causal_set(dw);
+//        Map<String, ReadIncOperation> last_wriop_map = new HashMap<String, ReadIncOperation>();
+//        System.out.println("Causal past of " + dw.toString() +":" + causalPast);
+//        ReadIncOperation causal_w = causalPast.get(0);
+//        ReadIncProcess dw_proc = (ReadIncProcess) this.riob.getProcess(causal_w.getPid());// ReadIncProcess in which the first op of dictating WRITE's causal past resides
+//        ReadIncOperation dw_pre_wriop = dw_proc.get_pre_wriop();
+//        causal_w.getEarliestRead().initEarlistRead(master_cur_rriop);
+//        causal_w.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//        if(causal_w.isWriteOp() && dw_pre_wriop.isWriteOp()) {
+//            this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop, causal_w.getVariable());
+//            last_wriop_map.put(causal_w.getVariable(), causal_w);
+//        }
+//        dw_pre_wriop = causal_w;
+//        for(int i = 1; i < causalPast.size(); i++){
+//            causal_w = causalPast.get(i);
+//            causal_w.getEarliestRead().initEarlistRead(master_cur_rriop);
+//            causal_w.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//            if(causal_w.isWriteOp()&& dw_pre_wriop.isWriteOp()) {
+//                this.riob.getGlobalActiveWritesMap().deactivateFrom(dw_pre_wriop, causal_w.getVariable());
+//                last_wriop_map.put(causal_w.getVariable(), causal_w);
+//            }
+//            dw_pre_wriop = causal_w;
+//        }
+//        this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);
+//        master_cur_rriop.getLatestWriteMap().updateLatestWrite(dw_pre_wriop);
+//
+//        if (dw.getIndex() <= dw_pre_wriop.getIndex())	// r and D(r) are in different processes and D(r) is in r'-downset
+//            dominated = true;
+//        else
+//            dw_proc.advance_pre_wriop(dw_pre_wriop);
+
+        ReadIncProcess curProcess = (ReadIncProcess) this.riob.getProcess(curOp.getPid());
+        ReadIncOperation preOpSameProcess = (ReadIncOperation) curOp.getReProgramOrder();
+        if(preOpSameProcess == null){ //如果是某线程第一个操作，就设置为自身
+//            System.out.println("preOp itself:" + curOp.toString());
+            preOpSameProcess = curOp;
+        }
+        ReadIncOperation preWriteSameProcess = curProcess.get_pre_wriop();
+        curOp.getEarliestRead().initEarlistRead(master_cur_rriop);
+        //step1.从同线程前一操作更新latestWriteMap
+        curOp.getLatestWriteMap().updateLatestWrite(preOpSameProcess);
+
+        //step2.从causalpast的操作中更新latestWriteMap
+        for(BasicOperation visOp: curOp.getPredecessors()){
+            ReadIncOperation visRincOp = (ReadIncOperation) visOp;
+            if(visRincOp.isInCausalSet()){
+                curOp.getLatestWriteMap().updateLatestWrite(visRincOp);
+            }
+        }
+
+        //step3.根据当前操作更新globalactivewrtiesmap以及当前线程的pre_wriop
+        if(curOp.isWriteOp()){
+            if(preOpSameProcess.isWriteOp()) {
+                this.riob.getGlobalActiveWritesMap().deactivateFrom(preOpSameProcess, curOp.getVariable());
+                last_wriop_map.put(curOp.getVariable(), curOp);
+            }
+            if(curOp.getIndex() > preWriteSameProcess.getIndex()) {
+                curProcess.advance_pre_wriop(curOp);
+            }
+        }
+
+    }
 	
 }

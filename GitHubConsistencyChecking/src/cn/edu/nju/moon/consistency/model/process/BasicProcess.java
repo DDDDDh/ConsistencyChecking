@@ -7,6 +7,7 @@ import src.cn.edu.nju.moon.consistency.model.observation.BasicObservation;
 import src.cn.edu.nju.moon.consistency.model.operation.BasicOperation;
 import src.cn.edu.nju.moon.consistency.model.operation.ClosureOperation;
 import src.cn.edu.nju.moon.consistency.model.operation.RawOperation;
+import src.cn.edu.nju.moon.consistency.model.operation.ReadIncOperation;
 import src.cn.edu.nju.moon.consistency.model.operation.factory.IOperationTransformer;
 
 /**

@@ -50,9 +50,14 @@ public class LatestWriteMap
 		for (String var : GlobalData.VARSET)	// variable by variable
 		{
 			riop_var_wriop = riop.getLatestWriteMap().getLatestWrite(var);
-			if (riop_var_wriop != null)
+			if (riop_var_wriop != null) {
+//				System.out.println("not a null" + riop.toString());
 				if (this.getLatestWrite(var) == null || this.getLatestWrite(var).getWid() < riop_var_wriop.getWid())
-					this.latestWriteMap.put(var, riop_var_wriop);	// update to the most latest one 
+					this.latestWriteMap.put(var, riop_var_wriop);    // update to the most latest one
+			}
+//			else{
+//				System.out.println("a null");
+//			}
 		}
 		
 		if (riop.isWriteOp() && ! riop.getWritetoOrder().isEmpty())	// there is some READ reads from @param riop
