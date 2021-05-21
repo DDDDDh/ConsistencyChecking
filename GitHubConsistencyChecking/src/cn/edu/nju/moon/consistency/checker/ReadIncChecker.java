@@ -95,7 +95,8 @@ public class ReadIncChecker extends Checker
 //			System.out.println("bop:" + bop.toString());
 			if (bop.isReadOp())	// "ReadIncremental" checking algorithm is READ centric.
 			{
-				master_cur_rriop = (ReadIncOperation) bop;
+//                System.out.println("rop:" + bop.toString());
+                master_cur_rriop = (ReadIncOperation) bop;
 //				System.out.println("bop earlist read:" + ((ReadIncOperation) bop).getEarliestRead().getEarlistReadInt());
 				master_proc.set_cur_rriop(master_cur_rriop);	// set the current {@link ReadIncOperation} to check
 				
@@ -110,23 +111,34 @@ public class ReadIncChecker extends Checker
 				 * @reason   if no other WRITEs than dw itself, it is not necessary to reschedule at all
 				 */
 				ReadIncOperation dw_cur_rriop = (ReadIncOperation) master_cur_rriop.getReadfromWrite();
-				if (this.reschedule_assertion(master_cur_rriop, dw_cur_rriop))
-				{
+//				if (this.reschedule_assertion(master_cur_rriop, dw_cur_rriop))
+//				{
 					if (this.readFromDW(master_cur_rriop, dw_cur_rriop))
 					{
 						consistent = false;	/** cycle **/
+						System.out.println("cycle detected at riop:" + master_cur_rriop.toStringCom());
 						break;
 					}
 					
 					// (3) reschedule operations in r'-downset (i.e., master_pre_rriop-downset)
-					if (dominated)
-						if (this.reschedule(master_cur_rriop))
-						{
-							consistent = false;	/** cycle **/
-							break;
-						}
-				}
-				// ui: for GAWM after rescheduling (even if no rescheduling at all: for test)
+					if (dominated) {
+                        this.loopTime++;
+//                        System.out.println("loop inc for r':" + master_proc.get_pre_rriop() + " r:" + master_cur_rriop);
+                        if (this.reschedule(master_cur_rriop)) {
+							System.out.println("cycle detected at riop:" + master_cur_rriop.toStringCom() +" after reschedule");
+                            consistent = false;    /** cycle **/
+                            break;
+                        }
+                    }
+//                    else{
+//                        System.out.println("loop stay for r':" + master_proc.get_pre_rriop() + " r:" + master_cur_rriop);
+//                    }
+//				}
+//				else{
+//				    this.skipLoop++;
+//                    System.out.println("do not need to reschedule by cur_rriop:" + master_cur_rriop + " dw:" + dw_cur_rriop + " process" + master_proc.getPid());
+//                }
+//				 ui: for GAWM after rescheduling (even if no rescheduling at all: for test)
 				DotUI.getInstance().addGAWM(this.riob.getGlobalActiveWritesMap(), master_cur_rriop.toString(), 2);
 				
 				master_proc.advance_pre_rriop(master_cur_rriop);	// iterate over the next (R,R) pair
@@ -135,8 +147,10 @@ public class ReadIncChecker extends Checker
 		
 		// ui
 		DotUI.getInstance().execute("readinc/" + name + "_" + master_proc.getPid());
-		
-		return consistent;	/** no cycle; satisfying PRAM Consistency **/
+
+        System.out.println("Loop time for inc alg of process " + riob.getMasterPid() + ": " + this.loopTime);
+
+        return consistent;	/** no cycle; satisfying PRAM Consistency **/
 	}
 
 	/**
@@ -175,6 +189,7 @@ public class ReadIncChecker extends Checker
 			assertTrue("WRITE ReadIncOperation in rr_interval", rr_wriop.isWriteOp());
 			
 			rr_wriop.getEarliestRead().initEarlistRead(master_cur_rriop);	// initialize earliest READ
+            rr_wriop.setIsPropagated();
 			rr_wriop.getLatestWriteMap().updateLatestWrite(pre_riop);	// update latest WRITE map depending on previous operation
 			this.riob.getGlobalActiveWritesMap().replace(rr_wriop);	// deactivate some WRITEs
 //			System.out.println("Done " + rr_wriop.toString());
@@ -208,9 +223,6 @@ public class ReadIncChecker extends Checker
                 causal_w = causalPast.get(i);
                 update_ww_operation(causal_w, master_cur_rriop, last_wriop_map);
             }
-            this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);
-            master_cur_rriop.getLatestWriteMap().updateLatestWrite(causal_w);
-
             this.riob.getGlobalActiveWritesMap().addActiveWriteMap(last_wriop_map);
             master_cur_rriop.getLatestWriteMap().updateLatestWrite(causal_w);
 
@@ -306,10 +318,10 @@ public class ReadIncChecker extends Checker
 //		 *  	the same variable are scheduled before "dw" and LatestWrite are updated 
 //		 *  	accordingly 
 //		 */
-//		ReadIncOperation temp_riop = new ReadIncOperation(new RawOperation(GlobalData.WRITE, GlobalData.DUMMYVAR, -1));	// temp 
+//		ReadIncOperation temp_riop = new ReadIncOperation(new RawOperation(GlobalData.WRITE, GlobalData.DUMMYVAR, -1));	// temp
 //		for (ReadIncOperation active_wriop : this.riob.getGlobalActiveWritesMap().getActiveWrites(master_cur_rriop.getVariable()))
 //			temp_riop.getLatestWriteMap().updateLatestWrite(active_wriop);
-//        System.out.println("Finish ww part");
+////        System.out.println("Finish ww part");
 		return dominated;
 	}
 	
@@ -333,6 +345,14 @@ public class ReadIncChecker extends Checker
 				&& cur_rriop.getValue() == dw_cur_rriop.getValue());
 		
 		Set<ReadIncOperation> gaws = this.riob.getGlobalActiveWritesMap().getActiveWrites(cur_rriop.getVariable());
+		if(gaws.contains(dw_cur_rriop) && gaws.size() >= 2){
+            System.out.println("case 1 cur_r:" + cur_rriop.toString() + " dw:" + dw_cur_rriop.toString());
+        }
+        else if(! gaws.contains(dw_cur_rriop) && gaws.size() >= 1){
+            System.out.println("case 2 cur_r:" + cur_rriop.toString() + " dw:" + dw_cur_rriop.toString());
+            System.out.println("gaws:" + gaws.toString());
+        }
+
 		return ( (gaws.contains(dw_cur_rriop) && gaws.size() >= 2) || (! gaws.contains(dw_cur_rriop) && gaws.size() >= 1));
 	}
 	
@@ -504,54 +524,165 @@ public class ReadIncChecker extends Checker
      */
 
 	private LinkedList<ReadIncOperation> causal_set(ReadIncOperation wriop){
-	    Set<ReadIncOperation> causalSet = new HashSet<>();
-        Queue<ReadIncOperation> pending = new LinkedList<ReadIncOperation>();
-        LinkedList<ReadIncOperation> tempStack = new LinkedList<ReadIncOperation>();
-        LinkedList<ReadIncOperation> opStack = new LinkedList<ReadIncOperation>(); //以逆拓扑序存储的操作集合
+//	    Set<ReadIncOperation> causalSet = new HashSet<>();
+//        Queue<ReadIncOperation> pending = new LinkedList<ReadIncOperation>();
+//        LinkedList<ReadIncOperation> tempStack = new LinkedList<ReadIncOperation>();
+//        LinkedList<ReadIncOperation> opStack = new LinkedList<ReadIncOperation>(); //以逆拓扑序存储的操作集合
+//
+////        System.out.println("start at wriop:" + wriop.toString());
+//
+//        pending.offer(wriop);
+////        tempStack.addFirst(wriop);
+//        while(!pending.isEmpty()){
+//            ReadIncOperation curOp = pending.poll();
+////            opStack.addFirst(curOp);
+////            System.out.println("add " + curOp.toStringCom() + "into tempStack");
+//            tempStack.addFirst(curOp); //入栈
+//            if(!curOp.isInCausalSet()){ //第一次加入causal set, 初始化入度
+//
+//                curOp.setInDegree(curOp.getPredecessors().size());
+//                curOp.setInCausalSet();
+//                causalSet.add(curOp);
+////                System.out.println("add " + curOp.toStringCom() +" into causal set, indegree:" + curOp.getInDegree());
+//            }
+//            ReadIncOperation tempOp = null;
+//            for(BasicOperation bop: curOp.getPredecessors()){ //BFS skeleton
+//                tempOp = (ReadIncOperation) bop;
+////                System.out.println(tempOp.toStringCom() +"is predecessor of " +curOp.toStringCom() +", add it to tempStack");
+//                tempStack.addFirst(tempOp);
+//                if(! tempOp.isInCausalSet()){
+//                    pending.offer(tempOp);
+//                }
+//            }
+//        }
+//
+//        System.out.println("now finish intialing of causal set");
+////        System.out.println("tempStack:" + tempStack.toString());
+//
+//        for(ReadIncOperation op: tempStack){
+//            op.setInCausalSet();
+//        }
+//
+//        while(!tempStack.isEmpty()){
+//            ReadIncOperation curOp = tempStack.removeFirst();
+////            System.out.println("considering" + curOp.toStringCom()+ " degree:" + curOp.getInDegree() + " isInSet:" + curOp.isInCausalSet());
+//            if(curOp.getInDegree() == 0 && curOp.isInCausalSet()){ //找到入度为0且仍在causalset中的点
+//                opStack.add(curOp);
+//                curOp.resetInCausalSet();
+//                ReadIncOperation tempOp = null;
+//                for(BasicOperation bop: curOp.getSuccessors()){
+//                    tempOp = (ReadIncOperation) bop;
+////                    System.out.println("successor of " + curOp.toStringCom() + ":" + tempOp.toStringCom());
+//                    if(tempOp.isInCausalSet()){
+////                        System.out.println("dec indegree of " + tempOp.toStringCom() + " from " + tempOp.getInDegree());
+//                        tempOp.decIndegree();
+////                        System.out.println("dec indegree of " + tempOp.toStringCom() + " to " + tempOp.getInDegree());
+//                    }
+//                    else{
+////                        System.out.println(tempOp.toStringCom() + " is not in causal set!");
+//                    }
+//                }
+//            }
+//        }
+//
+//        for(ReadIncOperation op: opStack){ //还原相关信息
+////            op.resetInCausalSet();
+//            op.setInCausalSet();
+//            op.resetIndegree();
+//        }
+//
+//
+//        if(opStack.size() != causalSet.size()){
+//            System.out.println("opstack size:" + opStack.size() + " causal set size:" + causalSet.size());
+//            System.out.println("opstack:" + opStack.toString());
+//            System.out.println("causal set:" + causalSet.toString());
+//        }
+//        else{
+//            System.out.println("equal!!!!-------------");
+//        }
+//
 
-        pending.offer(wriop);
-        while(!pending.isEmpty()){
-            ReadIncOperation curOp = pending.poll();
-//            opStack.addFirst(curOp);
-            tempStack.addFirst(curOp); //入栈
-            if(!curOp.isInCausalSet()){ //第一次加入causal set, 初始化入度
-                curOp.setInDegree(curOp.getPredecessors().size());
-                curOp.setInCausalSet();
-                causalSet.add(curOp);
-            }
-            ReadIncOperation tempOp = null;
-            for(BasicOperation bop: curOp.getPredecessors()){ //BFS skeleton
+        //restart.
+//		System.out.println("start at wriop:" + wriop.toString());
+		Set<ReadIncOperation> causalSet = new HashSet<>();
+		Queue<ReadIncOperation> pending = new LinkedList<ReadIncOperation>();
+		LinkedList<ReadIncOperation> opLi = new LinkedList<ReadIncOperation>(); //以逆拓扑序存储的操作集合
+		LinkedList<ReadIncOperation> stack = new LinkedList<>();
+
+		pending.offer(wriop);
+		wriop.setInCausalSet();
+
+		ReadIncOperation curOp = null;
+		ReadIncOperation tempOp = null;
+
+//		System.out.println("Step1. initial set");
+		//第一步，初始化causalset
+		while(!pending.isEmpty()) {
+			curOp = pending.poll();
+			curOp.setInCausalSet();
+			causalSet.add(curOp);
+			for(BasicOperation bop: curOp.getPredecessors()){ //BFS skeleton
                 tempOp = (ReadIncOperation) bop;
-                tempStack.addFirst(tempOp);
-                if(! tempOp.isInCausalSet()){
-                    pending.offer(tempOp);
-                }
+//                System.out.println(tempOp.toStringCom() +"is predecessor of " +curOp.toStringCom() +", add it to tempStack");
+               	if(!tempOp.isInCausalSet()){
+               		pending.offer(tempOp);
+				}
             }
-        }
+		}
 
-        while(!tempStack.isEmpty()){
-            ReadIncOperation curOp = tempStack.removeFirst();
-            if(curOp.getInDegree() == 0 && curOp.isInCausalSet()){ //找到入度为0且仍在causalset中的点
-                opStack.add(curOp);
-                curOp.resetInCausalSet();
-                ReadIncOperation tempOp = null;
-                for(BasicOperation bop: curOp.getSuccessors()){
-                    tempOp = (ReadIncOperation) bop;
-                    if(tempOp.isInCausalSet()){
-                        tempOp.decIndegree();
-                    }
-                }
-            }
-        }
+//		System.out.println("Step2. init indegree");
+		//第二步，初始化入度
+		int count = 0;
+		for(ReadIncOperation op: causalSet){
+			count = 0;
+			for(BasicOperation bop: op.getPredecessors()){
+				tempOp = (ReadIncOperation) bop;
+				if(tempOp.isInCausalSet()){
+					count++;
+				}
+			}
+			op.setInDegree(count);
+		}
 
-        for(ReadIncOperation op: opStack){ //还原相关信息
+		//找到入度为0的点，入栈，开始拓扑排序
+		for(ReadIncOperation op: causalSet){
+			if(op.getInDegree() == 0){
+				stack.addFirst(op);
+				op.setInDegree(-1);
+			}
+		}
+
+		while (!stack.isEmpty()){
+			curOp = stack.removeFirst();
+			opLi.add(curOp);
+			for(BasicOperation bop: curOp.getSuccessors()){
+				tempOp = (ReadIncOperation) bop;
+				tempOp.setInDegree(tempOp.getInDegree()-1);
+				if(tempOp.getInDegree() == 0){
+					stack.addFirst(tempOp);
+					tempOp.setInDegree(-1);
+				}
+			}
+		}
+
+		for(ReadIncOperation op: opLi){ //还原相关信息
 //            op.resetInCausalSet();
+            op.setInCausalSet();
             op.resetIndegree();
         }
+//
+//		if(opLi.size() != causalSet.size()){
+//            System.out.println("opstack size:" + opLi.size() + " causal set size:" + causalSet.size());
+//            System.out.println("opstack:" + opLi.toString());
+//            System.out.println("causal set:" + causalSet.toString());
+//        }
+//        else{
+//            System.out.println("equal!!!!-------------");
+//        }
 
-        assertTrue("Are they equal?", opStack.size() == causalSet.size());
-
-	    return opStack;
+        assertTrue("Are they equal?", opLi.size() == causalSet.size());
+//
+	    return opLi;
     }
 
     public void update_ww_operation(ReadIncOperation curOp, ReadIncOperation master_cur_rriop, Map<String, ReadIncOperation> last_wriop_map){
@@ -587,33 +718,36 @@ public class ReadIncChecker extends Checker
 //        else
 //            dw_proc.advance_pre_wriop(dw_pre_wriop);
 
-        ReadIncProcess curProcess = (ReadIncProcess) this.riob.getProcess(curOp.getPid());
-        ReadIncOperation preOpSameProcess = (ReadIncOperation) curOp.getReProgramOrder();
-        if(preOpSameProcess == null){ //如果是某线程第一个操作，就设置为自身
+        if(!curOp.isPropagated()) { //只处理还没有被处理过的写操作 (r-delta中的写)
+            curOp.setIsPropagated();
+            ReadIncProcess curProcess = (ReadIncProcess) this.riob.getProcess(curOp.getPid());
+            ReadIncOperation preOpSameProcess = (ReadIncOperation) curOp.getReProgramOrder();
+            if (preOpSameProcess == null) { //如果是某线程第一个操作，就设置为自身
 //            System.out.println("preOp itself:" + curOp.toString());
-            preOpSameProcess = curOp;
-        }
-        ReadIncOperation preWriteSameProcess = curProcess.get_pre_wriop();
-        curOp.getEarliestRead().initEarlistRead(master_cur_rriop);
-        //step1.从同线程前一操作更新latestWriteMap
-        curOp.getLatestWriteMap().updateLatestWrite(preOpSameProcess);
-
-        //step2.从causalpast的操作中更新latestWriteMap
-        for(BasicOperation visOp: curOp.getPredecessors()){
-            ReadIncOperation visRincOp = (ReadIncOperation) visOp;
-            if(visRincOp.isInCausalSet()){
-                curOp.getLatestWriteMap().updateLatestWrite(visRincOp);
+                preOpSameProcess = curOp;
             }
-        }
+            ReadIncOperation preWriteSameProcess = curProcess.get_pre_wriop();
+            curOp.getEarliestRead().initEarlistRead(master_cur_rriop);
+            //step1.从同线程前一操作更新latestWriteMap
+            curOp.getLatestWriteMap().updateLatestWrite(preOpSameProcess);
 
-        //step3.根据当前操作更新globalactivewrtiesmap以及当前线程的pre_wriop
-        if(curOp.isWriteOp()){
-            if(preOpSameProcess.isWriteOp()) {
-                this.riob.getGlobalActiveWritesMap().deactivateFrom(preOpSameProcess, curOp.getVariable());
-                last_wriop_map.put(curOp.getVariable(), curOp);
+            //step2.从causalpast的操作中更新latestWriteMap
+            for (BasicOperation visOp : curOp.getPredecessors()) {
+                ReadIncOperation visRincOp = (ReadIncOperation) visOp;
+                if (visRincOp.isInCausalSet()) {
+                    curOp.getLatestWriteMap().updateLatestWrite(visRincOp);
+                }
             }
-            if(curOp.getIndex() > preWriteSameProcess.getIndex()) {
-                curProcess.advance_pre_wriop(curOp);
+
+            //step3.根据当前操作更新globalactivewrtiesmap以及当前线程的pre_wriop
+            if (curOp.isWriteOp()) {
+                if (preOpSameProcess.isWriteOp()) {
+                    this.riob.getGlobalActiveWritesMap().deactivateFrom(preOpSameProcess, curOp.getVariable());
+                    last_wriop_map.put(curOp.getVariable(), curOp);
+                }
+                if (curOp.getIndex() > preWriteSameProcess.getIndex()) {
+                    curProcess.advance_pre_wriop(curOp);
+                }
             }
         }
 

@@ -57,6 +57,7 @@ public class ReadIncOperation extends BasicOperation
 
 	private boolean inCausalSet = false; /**Used in causal set choosing**/
 	private int inDegree = 0; /**Used in causal set choosing, the indegree of each node**/
+	private boolean isPropagated = false;
 
 //	private List<ReadIncOperation> predecessors = null;
 //	private List<ReadIncOperation> successors = null;
@@ -374,6 +375,18 @@ public class ReadIncOperation extends BasicOperation
 
 	public void resetIndegree(){
 		this.inDegree = 0;
+	}
+
+	public void setIsPropagated(){
+		this.isPropagated = true;
+	}
+
+	public boolean isPropagated(){
+		return this.isPropagated;
+	}
+
+	public String toStringCom(){
+		return this.toString() + "[p"+this.getPid()+"i"+this.getIndex()+"]";
 	}
 	
 //	/**

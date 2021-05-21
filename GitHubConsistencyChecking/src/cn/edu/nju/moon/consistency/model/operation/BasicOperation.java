@@ -225,7 +225,7 @@ public class BasicOperation extends RawOperation
 		boolean basicComparison = super.equals(obj);
 		
 		if (basicComparison && this.isReadOp())
-			return this.index == ((BasicOperation) obj).index;
+			return (this.index == ((BasicOperation) obj).index) && (this.pid == ((BasicOperation) obj).pid);
 		
 		return basicComparison;
 	}

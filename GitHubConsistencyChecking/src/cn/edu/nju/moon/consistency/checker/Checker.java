@@ -26,7 +26,8 @@ public abstract class Checker
 	protected BasicObservation rob = null;	/** {@link BasicObservation} to check **/
 	protected String name = "";		/** for {@link DotUI}; the name of file for visualization **/
 	private ISchedule schedule = null;	/** record of the checking result */
-	
+	public int loopTime = 0;
+	public int skipLoop = 0;
 	/**
 	 * Constructor
 	 * @param bob {@link BasicObservation} to check
@@ -87,6 +88,7 @@ public abstract class Checker
 		for (int pid = 0; pid < pids; pid++)
 		{
 			boolean partial_consistent = true;
+			System.out.println("dealing with process" + pid);
 			mob = this.getMasterObservation(pid);
 			if (this.trivial_check(mob))	/** pass the simple check */
 			{
@@ -94,9 +96,15 @@ public abstract class Checker
 
 				if (! this.check_part(mob))	/** process with pid does not satisfy consistency condition **/
 				{
+					System.out.println("detect cycle at process " + pid);
 					consistent = false;
 					partial_consistent = false;
 				}
+				System.out.println("Loop time for process" + pid +":" + this.loopTime);
+				System.out.println("Skip time for process" + pid +":" + this.skipLoop);
+				this.loopTime = 0;
+				this.skipLoop = 0;
+
 			}
 			else
 			{
